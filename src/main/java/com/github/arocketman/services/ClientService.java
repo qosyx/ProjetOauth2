@@ -11,30 +11,24 @@ import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
-public class ClientService  implements ClientDetailsService{
+public class ClientService implements ClientDetailsService {
     @Autowired
     private ClientRepository clientRepository;
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 
-    Oauth_client_details oauth_client_details =  clientRepository.getOne(clientId);
+        Oauth_client_details oauth_client_details = clientRepository.getOne(clientId);
 
         BaseClientDetails details = new BaseClientDetails();
         details.setClientId(oauth_client_details.getClient_id());
-        details.setAuthorizedGrantTypes(Arrays.asList("authorization_code") );
-        details.setScope(Arrays.asList("read, trust"));
-        //details.setRegisteredRedirectUri(Collections.singleton("http://anywhere.com"));
-        details.setResourceIds(Arrays.asList("oauth2-resource"));
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
-        details.setAuthorities(authorities);
+        details.setAuthorizedGrantTypes(Arrays.asList(oauth_client_details.getAuthorized_grant_types()));
+        details.setScope(Arrays.asList(oauth_client_details.getScope()));
+        details.setResourceIds(Arrays.asList(oauth_client_details.getResource_ids()));
+        details.setAuthorizedGrantTypes(Arrays.asList(oauth_client_details.getAuthorized_grant_types()));
 
         return details;
     }
